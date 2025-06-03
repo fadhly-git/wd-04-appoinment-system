@@ -9,8 +9,8 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Medicine',
-        href: '/medicine',
+        title: 'Obat',
+        href: '/dokter/obat',
     },
 ];
 

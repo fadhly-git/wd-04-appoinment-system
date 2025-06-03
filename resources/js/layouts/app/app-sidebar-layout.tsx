@@ -11,12 +11,13 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar">
+            <AppContent variant="sidebar" className="overflow-hidden">
                 <ScrollArea className="h-full w-full">
                     <Toaster />
                     <AppSidebarHeader breadcrumbs={breadcrumbs} />
                     {children}
                     <ScrollBar />
+                    <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             </AppContent>
         </AppShell>

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Dokter;
 
 use App\Models\JadwalPeriksa;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Http\Resources\JadwalPeriksaResource;
 
 class JadwalDokterController extends Controller
 {
@@ -16,8 +18,20 @@ class JadwalDokterController extends Controller
     public function index()
     {
         $jadwal = JadwalPeriksa::all();
-        return Inertia::render('dokter/JadwalDokter/Index', [
-            'jadwal' => $jadwal,
+        $dokter = User::where('role', 'dokter')->get()->pluck('name', 'id');
+        $jadwal = $jadwal->map(function ($item) use ($dokter) {
+            return [
+                'id' => $item->id,
+                'id_dokter' => $item->id_dokter,
+                'hari' => $item->hari,
+                'jam_mulai' => $item->jam_mulai,
+                'jam_selesai' => $item->jam_selesai,
+                'status' => $item->status,
+                'dokter' => $dokter[$item->id_dokter] ?? 'Tidak Diketahui',
+            ];
+        });
+        return Inertia::render('dokter/JadwalDokter/index', [
+            'jadwals' => $jadwal,
         ]);
     }
 
@@ -26,7 +40,7 @@ class JadwalDokterController extends Controller
      */
     public function create()
     {
-        return Inertia::render('dokter/JadwalDokter/Create');
+        return Inertia::render('dokter/JadwalDokter/create');
     }
 
     /**
@@ -41,6 +55,21 @@ class JadwalDokterController extends Controller
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'status' => 'boolean',
         ]);
+
+        // Cek apakah jadwal sudah ada atau berada dalam rentang jadwal yang ada
+        $exists = JadwalPeriksa::where('id_dokter', $user->id)
+            ->where('hari', $request->hari)
+            ->where(function ($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('jam_mulai', '<', $request->jam_selesai)
+                        ->where('jam_selesai', '>', $request->jam_mulai);
+                });
+            })
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors(['error' => 'Jadwal dengan hari dan jam yang sama sudah ada.']);
+        }
 
         JadwalPeriksa::create([
             'id_dokter' => $user->id,
@@ -67,8 +96,11 @@ class JadwalDokterController extends Controller
     public function edit(string $id)
     {
         $jadwal = JadwalPeriksa::findOrFail($id);
+        // Ubah format jam_mulai dan jam_selesai tanpa Carbon
+        $jadwal->jam_mulai = date('H:i', strtotime($jadwal->jam_mulai));
+        $jadwal->jam_selesai = date('H:i', strtotime($jadwal->jam_selesai));
         return Inertia::render('dokter/JadwalDokter/edit', [
-            'jadwal' => $jadwal,
+            'jadwals' => $jadwal,
         ]);
     }
 
@@ -84,7 +116,7 @@ class JadwalDokterController extends Controller
             'hari' => 'required|string|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-            'status' => 'boolean',
+            'status' => 'numeric|nullable|in:0,1',
         ]);
 
         $jadwal->update([
@@ -96,6 +128,19 @@ class JadwalDokterController extends Controller
         ]);
 
         return back()->with('success', 'Jadwal berhasil diperbarui.');
+    }
+
+    public function updateStatus(Request $request, string $id)
+    {
+        $jadwal = JadwalPeriksa::findOrFail($id);
+        if ($jadwal->id_dokter !== Auth::id()) {
+            return back()->withErrors(['error' => 'Anda tidak memiliki izin untuk mengubah status jadwal ini.']);
+        }
+
+        $jadwal->status = !$jadwal->status;
+        $jadwal->save();
+
+        return back()->with('success', 'Status jadwal berhasil diperbarui.');
     }
 
     /**

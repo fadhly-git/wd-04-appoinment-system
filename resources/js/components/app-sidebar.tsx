@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BriefcaseMedicalIcon, LayoutGrid } from 'lucide-react';
+import { BriefcaseMedicalIcon, CalendarDays, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItemsPatient: NavItem[] = [
@@ -24,6 +24,11 @@ const mainNavItemsDocter: NavItem[] = [
         title: 'Obat',
         href: '/dokter/obat',
         icon: BriefcaseMedicalIcon,
+    },
+    {
+        title: 'Jadwal Periksa',
+        href: '/dokter/jadwal-periksa',
+        icon: CalendarDays,
     },
 ];
 

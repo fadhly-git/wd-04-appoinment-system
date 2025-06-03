@@ -8,6 +8,7 @@ use Inertia\Inertia;
 // | import controller
 // |------------------------------------------------
 use App\Http\Controllers\Dokter\ObatController;
+use App\Http\Controllers\Dokter\JadwalDokterController;
 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () {
     Route::get(
@@ -26,5 +27,15 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::get('/{id}/edit', [ObatController::class, 'edit'])->name('dokter.obat.edit');
         Route::patch('/{id}', [ObatController::class, 'update'])->name('dokter.obat.update');
         Route::delete('/{id}', [ObatController::class, 'destroy'])->name('dokter.obat.destroy');
+    });
+
+    Route::prefix('jadwal-periksa')->group(function () {
+        Route::get('/', [JadwalDokterController::class, 'index'])->name('dokter.jadwal.index');
+        Route::get('/create', [JadwalDokterController::class, 'create'])->name('dokter.jadwal.create');
+        Route::post('/', [JadwalDokterController::class, 'store'])->name('dokter.jadwal.store');
+        Route::get('/{id}/edit', [JadwalDokterController::class, 'edit'])->name('dokter.jadwal.edit');
+        Route::patch('/{id}', [JadwalDokterController::class, 'update'])->name('dokter.jadwal.update');
+        Route::patch('/{id}/status', [JadwalDokterController::class, 'updateStatus'])->name('dokter.jadwal.update.status');
+        Route::delete('/{id}', [JadwalDokterController::class, 'destroy'])->name('dokter.jadwal.destroy');
     });
 });
