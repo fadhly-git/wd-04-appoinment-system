@@ -17,7 +17,10 @@ class JadwalDokterController extends Controller
      */
     public function index()
     {
-        $jadwal = JadwalPeriksa::all();
+        $jadwal = JadwalPeriksa::where('id_dokter', Auth::id())
+            ->orderBy('hari')
+            ->orderBy('jam_mulai')
+            ->get();
         $dokter = User::where('role', 'dokter')->get()->pluck('name', 'id');
         $jadwal = $jadwal->map(function ($item) use ($dokter) {
             return [
@@ -66,6 +69,12 @@ class JadwalDokterController extends Controller
                 });
             })
             ->exists();
+
+        if ($request->status) {
+            JadwalPeriksa::where('id_dokter', $user->id)
+                ->where('status', true)
+                ->update(['status' => false]);
+        }
 
         if ($exists) {
             return back()->withErrors(['error' => 'Jadwal dengan hari dan jam yang sama sudah ada.']);
@@ -119,6 +128,28 @@ class JadwalDokterController extends Controller
             'status' => 'numeric|nullable|in:0,1',
         ]);
 
+        // Jika status yang diupdate menjadi aktif (1 atau true), set semua jadwal dokter ini menjadi tidak aktif (false)
+        if ($request->status) {
+            JadwalPeriksa::where('id_dokter', $user->id)
+                ->where('id', '!=', $jadwal->id)
+                ->update(['status' => false]);
+        }
+
+        // Cek apakah jadwal sudah ada atau berada dalam rentang jadwal yang ada
+        // $exists = JadwalPeriksa::where('id_dokter', $user->id)
+        //     ->where('hari', $request->hari)
+        //     ->where(function ($query) use ($request) {
+        //         $query->where(function ($q) use ($request) {
+        //             $q->where('jam_mulai', '<', $request->jam_selesai)
+        //                 ->where('jam_selesai', '>', $request->jam_mulai);
+        //         });
+        //     })
+        //     ->exists();
+
+        // if ($exists) {
+        //     return back()->withErrors(['error' => 'Jadwal dengan hari dan jam yang sama sudah ada.']);
+        // }
+
         $jadwal->update([
             'id_dokter' => $user->id,
             'hari' => $request->hari,
@@ -137,6 +168,12 @@ class JadwalDokterController extends Controller
             return back()->withErrors(['error' => 'Anda tidak memiliki izin untuk mengubah status jadwal ini.']);
         }
 
+        // Jika status yang diupdate menjadi aktif (true), set semua jadwal dokter ini menjadi tidak aktif (false)
+        if (!$jadwal->status) {
+            JadwalPeriksa::where('id_dokter', $jadwal->id_dokter)
+                ->where('id', '!=', $jadwal->id)
+                ->update(['status' => false]);
+        }
         $jadwal->status = !$jadwal->status;
         $jadwal->save();
 

@@ -60,7 +60,7 @@ export default function Register() {
 
     const onSubmit: FormEventHandler = handleSubmit((data) => {
         // console.log('Form data:', data);
-        post(route('register'), {
+        post(route('register', data), {
             data,
             onError: (errors) => {
                 Object.entries(errors).forEach(([key, value]) => {

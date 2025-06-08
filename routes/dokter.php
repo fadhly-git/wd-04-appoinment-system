@@ -9,6 +9,7 @@ use Inertia\Inertia;
 // |------------------------------------------------
 use App\Http\Controllers\Dokter\ObatController;
 use App\Http\Controllers\Dokter\JadwalDokterController;
+use App\Http\Controllers\Dokter\MemeriksaControlller as DokterMemeriksaControlller;
 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () {
     Route::get(
@@ -37,5 +38,11 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::patch('/{id}', [JadwalDokterController::class, 'update'])->name('dokter.jadwal.update');
         Route::patch('/{id}/status', [JadwalDokterController::class, 'updateStatus'])->name('dokter.jadwal.update.status');
         Route::delete('/{id}', [JadwalDokterController::class, 'destroy'])->name('dokter.jadwal.destroy');
+    });
+
+    Route::prefix('memeriksa')->group(function () {
+        Route::get('/', [DokterMemeriksaControlller::class, 'index'])->name('dokter.memeriksa.index');
+        Route::get('/{id}/periksa', [DokterMemeriksaControlller::class, 'periksa'])->name('dokter.memeriksa.periksa');
+        Route::post('/{id}/periksa', [DokterMemeriksaControlller::class, 'store'])->name('dokter.memeriksa.store');
     });
 });

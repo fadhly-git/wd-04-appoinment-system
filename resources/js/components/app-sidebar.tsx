@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BriefcaseMedicalIcon, CalendarDays, LayoutGrid } from 'lucide-react';
+import { BriefcaseMedicalIcon, CalendarCheck2Icon, CalendarDays, LayoutGrid, NotebookPen } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItemsPatient: NavItem[] = [
@@ -11,6 +11,11 @@ const mainNavItemsPatient: NavItem[] = [
         title: 'Dashboard',
         href: '/pasien/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Janji Periksa',
+        href: '/pasien/janji-periksa',
+        icon: CalendarCheck2Icon,
     },
 ];
 
@@ -29,6 +34,11 @@ const mainNavItemsDocter: NavItem[] = [
         title: 'Jadwal Periksa',
         href: '/dokter/jadwal-periksa',
         icon: CalendarDays,
+    },
+    {
+        title: 'Periksa Pasien',
+        href: '/dokter/memeriksa',
+        icon: NotebookPen,
     },
 ];
 
