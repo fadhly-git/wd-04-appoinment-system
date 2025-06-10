@@ -7,8 +7,8 @@ import { Head, Link, usePage } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Jadwal Periksa',
-        href: '/dokter/jadwal-periksa',
+        title: 'template',
+        href: '/',
     },
 ];
 

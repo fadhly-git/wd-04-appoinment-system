@@ -182,7 +182,7 @@ export default function IndexObat() {
             <div className="flex flex-col gap-4 rounded-xl p-4">
                 <div className="border-sidebar-border/70 dark:border-sidebar-border items-center rounded-xl border p-4">
                     <pre className="rounded bg-gray-100 p-4 font-mono text-sm whitespace-pre-wrap dark:bg-gray-800">
-                        {JSON.stringify(dokters, null, 2)}
+                        {/* {JSON.stringify(dokters, null, 2)} */}
                     </pre>
                 </div>
             </div>

@@ -17,6 +17,11 @@ const mainNavItemsPatient: NavItem[] = [
         href: '/pasien/janji-periksa',
         icon: CalendarCheck2Icon,
     },
+    {
+        title: 'Riwayat Periksa',
+        href: '/pasien/periksa',
+        icon: NotebookPen,
+    },
 ];
 
 const mainNavItemsDocter: NavItem[] = [
@@ -48,20 +53,20 @@ export function AppSidebar() {
     const isDokter = auth.user?.role === 'dokter';
     const isPasien = auth.user?.role === 'pasien';
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         {isDokter && (
                             <SidebarMenuButton size="lg" asChild>
-                                <Link href="/dashboard/dokter" prefetch>
+                                <Link href="/dokter/dashboard" prefetch>
                                     <AppLogo />
                                 </Link>
                             </SidebarMenuButton>
                         )}
                         {isPasien && (
                             <SidebarMenuButton size="lg" asChild>
-                                <Link href="/dashboard/pasien" prefetch>
+                                <Link href="/pasien/dashboard" prefetch>
                                     <AppLogo />
                                 </Link>
                             </SidebarMenuButton>
