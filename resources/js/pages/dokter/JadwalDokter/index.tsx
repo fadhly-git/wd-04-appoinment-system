@@ -4,7 +4,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import AppLayout from '@/layouts/app-layout';
 import { SharedData, type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 import { BadgeAction } from './badge-action';
 
@@ -45,19 +45,8 @@ export default function IndexObat() {
         status: 0,
     });
     const { jadwals, auth } = usePage<JadwalPeriksaProps>().props;
-    const [isFirstRender, setIsFirstRender] = useState(true);
     const [open, setOpen] = useState(false);
     const [nameJadwal, setNameJadwal] = useState('');
-    useEffect(() => {
-        if (auth.user && isFirstRender) {
-            toast.success('Welcome to schedule page, ' + auth.user.name, {
-                duration: 5000,
-                position: 'top-right',
-            });
-            // Display a welcome message only on the first render
-            setIsFirstRender(false);
-        }
-    }, [auth.user, isFirstRender]);
     if (!auth.user) {
         return <div className="flex h-screen items-center justify-center">Loading...</div>;
     }

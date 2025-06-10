@@ -44,5 +44,7 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::get('/', [DokterMemeriksaControlller::class, 'index'])->name('dokter.memeriksa.index');
         Route::get('/{id}/periksa', [DokterMemeriksaControlller::class, 'periksa'])->name('dokter.memeriksa.periksa');
         Route::post('/{id}/periksa', [DokterMemeriksaControlller::class, 'store'])->name('dokter.memeriksa.store');
+        Route::get('/{id}/edit', [DokterMemeriksaControlller::class, 'edit'])->name('dokter.memeriksa.edit');
+        Route::patch('/{id}/update', [DokterMemeriksaControlller::class, 'update'])->name('dokter.memeriksa.update');
     });
 });

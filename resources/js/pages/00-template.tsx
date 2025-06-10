@@ -1,3 +1,4 @@
+import { FlashToast } from '@/components/toast-flashmessage';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
@@ -25,6 +26,7 @@ export default function Template() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Template" />
+            <FlashToast />
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="border-sidebar-border/70 dark:border-sidebar-border items-center rounded-xl border p-4">
                     <h1 className="text-lg font-black">Template</h1>

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FlashToast } from '@/components/toast-flashmessage';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
@@ -37,6 +37,7 @@ export default function PeriksaPasien() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Memeriksa" />
+            <FlashToast />
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="border-sidebar-border/70 dark:border-sidebar-border items-center rounded-xl border p-4">
                     <h1 className="text-lg font-black">Memeriksa Pasien</h1>
@@ -62,26 +63,36 @@ export default function PeriksaPasien() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {data
-                                    .sort((a, b) => a.no_antrian - b.no_antrian)
-                                    .map((item) => (
-                                        <TableRow key={item.id}>
-                                            <TableCell className="w-[50px] align-top">{item.no_antrian}</TableCell>
-                                            <TableCell className="align-top">{item.pasien.name}</TableCell>
-                                            <TableCell className="align-top whitespace-normal">{item.keluhan}</TableCell>
-                                            <TableCell>
-                                                {!item.periksa ? (
-                                                    <Link href={route('dokter.memeriksa.periksa', { id: item.id })}>
-                                                        <Button>Periksa</Button>
-                                                    </Link>
-                                                ) : (
-                                                    <Button className="hover:bg-black/50 hover:text-white" variant="secondary">
-                                                        Edit
-                                                    </Button>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                {data.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="text-center">
+                                            Tidak ada data periksa.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    data
+                                        .sort((a, b) => a.no_antrian - b.no_antrian)
+                                        .map((item) => (
+                                            <TableRow key={item.id}>
+                                                <TableCell className="w-[50px] align-top">{item.no_antrian}</TableCell>
+                                                <TableCell className="align-top">{item.pasien.name}</TableCell>
+                                                <TableCell className="align-top whitespace-normal">{item.keluhan}</TableCell>
+                                                <TableCell>
+                                                    {!item.periksa ? (
+                                                        <Link href={route('dokter.memeriksa.periksa', { id: item.id })}>
+                                                            <Button>Periksa</Button>
+                                                        </Link>
+                                                    ) : (
+                                                        <Link href={route('dokter.memeriksa.edit', { id: item.periksa.id })}>
+                                                            <Button className="hover:bg-black/50 hover:text-white" variant="secondary">
+                                                                Edit
+                                                            </Button>
+                                                        </Link>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                )}
                             </TableBody>
                         </Table>
                     </div>

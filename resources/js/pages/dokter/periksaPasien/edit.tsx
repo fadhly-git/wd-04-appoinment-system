@@ -25,10 +25,18 @@ interface Obat {
     harga_obat: number;
 }
 
+interface detailPeriksa {
+    id_obat: number;
+}
+
 interface Data {
     id: number;
     name: string;
-    keluhan: string;
+    id_jadwal_periksa: number;
+    catatan: string;
+    tanggal_periksa: string;
+    biaya_periksa: number;
+    detail_periksa: detailPeriksa[];
     obats: Obat[];
 }
 
@@ -36,17 +44,27 @@ interface pageProps extends SharedData {
     datas: Data;
 }
 
-export default function Periksa() {
+export default function EditPeriksa() {
     const inputRef = useRef(null);
     const biayaPeriksa = 15000;
     const { datas } = usePage<pageProps>().props;
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, patch, errors, processing } = useForm({
         tanggal_periksa: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
         name: datas.name,
         catatan: '',
         obat: [] as string[],
         biaya_periksa: 0,
     });
+
+    useEffect(() => {
+        setData({
+            tanggal_periksa: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            name: datas.name,
+            catatan: datas.catatan,
+            obat: datas.detail_periksa.map((d) => d.id_obat.toString()),
+            biaya_periksa: datas.biaya_periksa,
+        });
+    }, [datas, setData]);
 
     useEffect(() => {
         // Hitung total harga obat terpilih
@@ -60,7 +78,7 @@ export default function Periksa() {
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('dokter.memeriksa.store', { id: datas.id }), {
+        patch(route('dokter.memeriksa.update', { id: datas.id }), {
             onSuccess: () => {
                 // Reset form after successful submission
                 setData({
